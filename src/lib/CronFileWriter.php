@@ -1,5 +1,5 @@
 <?php
-namespace plinker\Cron\lib;
+namespace Plinker\Cron\lib;
 
 /**
  * Flatfile CRUD class

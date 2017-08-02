@@ -1,5 +1,5 @@
 <?php
-namespace plinker\Cron {
+namespace Plinker\Cron {
 
     use RedBeanPHP\R;
 
