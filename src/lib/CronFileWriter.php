@@ -28,10 +28,7 @@ class CronFileWriter
                     throw new Exception('Cannot create file');
                 }
                 flock($this->handle, LOCK_EX);
-                fwrite(
-                    $this->handle,
-                    '# FlatFileCRUD by Lawrence Cherone'.PHP_EOL
-                );
+                fwrite($this->handle, '');
                 flock($this->handle, LOCK_UN);
                 fclose($this->handle);
             }

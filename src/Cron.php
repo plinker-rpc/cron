@@ -24,7 +24,7 @@ namespace Plinker\Cron {
                     array('config construct error [database] empty')
                 ), JSON_PRETTY_PRINT));
             } else {
-                $this->tab = new lib\CronFileWriter($this->config['config']['taskfile']);
+                $this->tab = new lib\CronFileWriter((!empty($this->config['config']['taskfile']) ? $this->config['config']['taskfile'] : './cron-task-file'));
             }
         }
 
