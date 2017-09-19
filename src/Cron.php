@@ -3,8 +3,8 @@ namespace Plinker\Cron {
 
     use RedBeanPHP\R;
 
-    class Cron {
-
+    class Cron
+    {
         public $config = array();
         private $tab;
 
@@ -13,7 +13,8 @@ namespace Plinker\Cron {
                 'taskfile' => './cron-task-file',
                 'applyCrontab' => false
             ),
-        )) {
+        ))
+        {
             $this->config = $config;
 
             //check database construct values
@@ -68,7 +69,6 @@ namespace Plinker\Cron {
             $key = $params[0];
             $value = $params[1];
             $this->tab->update($key, $value);
-
         }
 
         public function delete(array $params = array())

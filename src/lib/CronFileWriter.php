@@ -13,11 +13,11 @@ class CronFileWriter
     private $handle;
 
     /**
-	 * construct loads [or creates] the file
-	 *
-	 * @param string $file
-	 */
-    function __construct($file)
+     * construct loads [or creates] the file
+     *
+     * @param string $file
+     */
+    public function __construct($file)
     {
         $this->file = $file;
 
@@ -34,7 +34,7 @@ class CronFileWriter
             }
 
             //check file is readable
-            if (!is_readable($this->file))  {
+            if (!is_readable($this->file)) {
                 throw new Exception('File is not readable');
             }
 
@@ -42,22 +42,21 @@ class CronFileWriter
             if (!is_writable($this->file)) {
                 throw new Exception('File is not writable');
             }
-
         } catch (Exception $e) {
             exit('Error: '.$e->getMessage());
         }
     }
 
     /**
-	 * Create or update an entry in the .htaccess file
-	 *
-	 * @param string $data
-	 * @param string $delim
-	 */
-    function create($delim = '#', $data = PHP_EOL)
+     * Create or update an entry in the .htaccess file
+     *
+     * @param string $data
+     * @param string $delim
+     */
+    public function create($delim = '#', $data = PHP_EOL)
     {
         //first check for existing then update
-        if($this->read($delim)) {
+        if ($this->read($delim)) {
             $this->update($delim, $data);
         } else {
             //create new entry
@@ -70,12 +69,12 @@ class CronFileWriter
     }
 
     /**
-	 * Read entry from .htaccess file
-	 *
-	 * @param string $delim
-	 * @return mixed (bool|string)
-	 */
-    function read($delim = '#')
+     * Read entry from .htaccess file
+     *
+     * @param string $delim
+     * @return mixed (bool|string)
+     */
+    public function read($delim = '#')
     {
         $file = file_get_contents($this->file);
 
@@ -88,12 +87,12 @@ class CronFileWriter
     }
 
     /**
-	 * Update entry in .htaccess file
-	 *
-	 * @param string $data
-	 * @param string $delim
-	 */
-    function update($delim = '#', $data = PHP_EOL)
+     * Update entry in .htaccess file
+     *
+     * @param string $data
+     * @param string $delim
+     */
+    public function update($delim = '#', $data = PHP_EOL)
     {
         $data = str_replace(
             array('$1','$2','$3','$4','$5'),
@@ -116,12 +115,12 @@ class CronFileWriter
     }
 
     /**
-	 * Delete entry from .htaccess file
-	 *
-	 * @param string $delim
-	 * @return bool
-	 */
-    function delete($delim = '#')
+     * Delete entry from .htaccess file
+     *
+     * @param string $delim
+     * @return bool
+     */
+    public function delete($delim = '#')
     {
         $file = file_get_contents($this->file);
 
@@ -137,14 +136,13 @@ class CronFileWriter
         }
     }
 
-    function dump()
+    public function dump()
     {
         return file_get_contents($this->file);
     }
 
-    function drop()
+    public function drop()
     {
         return file_put_contents($this->file, '');
     }
-
 }
