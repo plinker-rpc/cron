@@ -10,7 +10,7 @@ namespace Plinker\Cron {
 
         public function __construct(array $config = array(
             'config' => array(
-                'taskfile' => './cron-task-file',
+                'taskfile'     => './cron-task-file',
                 'applyCrontab' => false
             ),
         ))
