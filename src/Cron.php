@@ -2,7 +2,7 @@
 namespace Plinker\Cron {
 
     use RedBeanPHP\R;
-    
+
     /**
      * Cron Plinker class
      */
@@ -59,7 +59,7 @@ namespace Plinker\Cron {
 
         /**
          * Create a crontab entry
-         * 
+         *
          * @param string $params[0] - Key to match cron entry
          * @param string $params[1] - Cron task line
          */
@@ -72,7 +72,7 @@ namespace Plinker\Cron {
 
         /**
          * Get a single crontab entrys value
-         * 
+         *
          * @param string $params[0] - Key to match cron entry
          */
         public function get(array $params = array())
@@ -83,7 +83,7 @@ namespace Plinker\Cron {
         
         /**
          * Alias of get
-         * 
+         *
          * @param string $params[0] - Key to match cron entry
          */
         public function read(array $params = array())
@@ -93,7 +93,7 @@ namespace Plinker\Cron {
 
         /**
          * Update a crontab entry
-         * 
+         *
          * @param string $params[0] - Key to match cron entry
          * @param string $params[1] - Cron task line
          */
@@ -106,7 +106,7 @@ namespace Plinker\Cron {
 
         /**
          * Delete a crontab entry
-         * 
+         *
          * @param string $params[0] - Key to match cron entry
          */
         public function delete(array $params = array())
@@ -124,7 +124,7 @@ namespace Plinker\Cron {
         }
 
         /**
-         * 
+         *
          */
         public function __destruct()
         {
