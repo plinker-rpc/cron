@@ -2,12 +2,20 @@
 namespace Plinker\Cron {
 
     use RedBeanPHP\R;
-
+    
+    /**
+     * Cron Plinker class
+     */
     class Cron
     {
         public $config = array();
         private $tab;
 
+        /**
+         * Construct
+         *
+         * @param array $config
+         */
         public function __construct(array $config = array(
             'config' => array(
                 'taskfile'     => './cron-task-file',
