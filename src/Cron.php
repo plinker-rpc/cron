@@ -18,47 +18,51 @@ namespace Plinker\Cron {
          */
         public function __construct(array $config = array(
             'config' => array(
-                'taskfile'     => './cron-task-file',
-                'applyCrontab' => false
+                'journal' => './crontab.journal',
+                'apply'   => false
             ),
         ))
         {
             $this->config = $config;
 
-            //check database construct values
-            if (empty($this->config['config'])) {
-                exit(json_encode($this->response(
-                    'Bad Request',
-                    400,
-                    array('config construct error [database] empty')
-                ), JSON_PRETTY_PRINT));
-            } else {
-                $this->tab = new lib\CronFileWriter((!empty($this->config['config']['taskfile']) ? $this->config['config']['taskfile'] : './cron-task-file'));
-            }
-        }
-
-        private function response($data = null, $status = 200, $errors = array())
-        {
-            return array(
-                'status' => $status,
-                'errors' => $errors,
-                'data'   => $data
+            $this->tab = new lib\CronFileWriter(
+                (!empty($this->config['config']['journal']) ? $this->config['config']['journal'] : './crontab.journal')
             );
         }
 
+        /**
+         * Return current crontab
+         */
+        public function dump(array $params = array())
+        {
+            return $this->tab->dump();
+        }
+        
+        /**
+         * Alias of dump
+         */
         public function crontab()
         {
             return $this->dump();
         }
 
-        public function applyCrontab()
+        /**
+         * Apply journal file to crontab
+         */
+        public function apply()
         {
-            if (!empty($this->config['config']['applyCrontab'])) {
-                return exec('crontab '.$this->config['config']['taskfile']);
+            if (!empty($this->config['config']['apply'])) {
+                return exec('crontab '.$this->config['config']['journal']);
             }
             return false;
         }
 
+        /**
+         * Create a crontab entry
+         * 
+         * @param string $params[0] - Key to match cron entry
+         * @param string $params[1] - Cron task line
+         */
         public function create(array $params = array())
         {
             $key = $params[0];
@@ -66,12 +70,33 @@ namespace Plinker\Cron {
             $this->tab->create($key, $value);
         }
 
-        public function read(array $params = array())
+        /**
+         * Get a single crontab entrys value
+         * 
+         * @param string $params[0] - Key to match cron entry
+         */
+        public function get(array $params = array())
         {
             $key = $params[0];
             return $this->tab->read($key);
         }
+        
+        /**
+         * Alias of get
+         * 
+         * @param string $params[0] - Key to match cron entry
+         */
+        public function read(array $params = array())
+        {
+            return $this->get($params);
+        }
 
+        /**
+         * Update a crontab entry
+         * 
+         * @param string $params[0] - Key to match cron entry
+         * @param string $params[1] - Cron task line
+         */
         public function update(array $params = array())
         {
             $key = $params[0];
@@ -79,25 +104,31 @@ namespace Plinker\Cron {
             $this->tab->update($key, $value);
         }
 
+        /**
+         * Delete a crontab entry
+         * 
+         * @param string $params[0] - Key to match cron entry
+         */
         public function delete(array $params = array())
         {
             $key = $params[0];
             $this->tab->delete($key);
         }
 
+        /**
+         * Drop crontab journal
+         */
         public function drop(array $params = array())
         {
             $this->tab->drop();
         }
 
-        public function dump(array $params = array())
-        {
-            return $this->tab->dump();
-        }
-
+        /**
+         * 
+         */
         public function __destruct()
         {
-            $this->applyCrontab();
+            $this->apply();
         }
     }
 
