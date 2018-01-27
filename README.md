@@ -47,7 +47,7 @@ Making remote calls.
             $config['plinker']['endpoint'],
         
             // component namespace to interface to
-            'Cron\Cron',
+            'Cron\Manager',
         
             // keys
             $config['plinker']['public_key'],
