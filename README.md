@@ -1,13 +1,13 @@
-# PlinkerRPC - Cron
+# PlinkerRPC - Files
 
-A cron component which allows you to read and control cron tasks on remote systems.
+A files component which allows you to read and write files.
 
 ## Install
 
 Require this package with composer using the following command:
 
 ``` bash
-$ composer require plinker/cron
+$ composer require plinker/files
 ```
 
 ## Client
@@ -27,159 +27,168 @@ Creating a client instance is done as follows:
     $client = new \Plinker\Core\Client(
         'http://example.com/server.php',
         [
-            'secret' => 'a secret password',
-            // optional
-            'config' => [
-                'journal' => './.plinker/crontab.journal',
-                'apply'   => false
-            ]
+            'secret' => 'a secret password'
         ]
     );
     
     // or using global function, with optional array
-    $client = plinker_client('http://example.com/server.php', 'a secret password', [
-        'config' => [
-            'journal' => './.plinker/crontab.journal',
-            'apply'   => false
-        ]
-    ]);
+    $client = plinker_client('http://example.com/server.php', 'a secret password');
     
-
-## Component Config
-
-| Parameter    | Description | Default |
-| ----------   | ------------- |  ------------- | 
-| journal | Path to journal file | `./.plinker/crontab.journal` |
-| apply | Apply crontab after each call, default is to only apply upon calling `apply()` method | `false` |
-
 
 ## Methods
 
 Once setup, you call the class though its namespace to its method.
 
-### User
+### List
 
-Get current user, helps to debug which user the crontab is owned by.
+List files and folders.
+
+| Parameter   | Type           | Description   | Default        |
+| ----------  | -------------  | ------------- |  ------------- | 
+| dir         | string         | Base paste to list files and folders from | `./` |
+| extended    | bool           | Return extended fileinfo | `false` |
+| depth       | int            | Iterator depth | `10` |
+
 
 **Call**
 ``` php
-$result = $client->cron->user();
+$result = $client->files->list('./', false, 10);
 ```
 
 **Response**
 ``` text
-www-data
+Array
+(
+    [/] => Array
+        (
+            [0] => Array
+                (
+                    [name] => server.php
+                    [type] => file
+                    [size] => 706
+                )
+
+            [1] => Array
+                (
+                    [name] => .plinker
+                    [type] => folder
+                    [size] => 4096
+                )
+
+            [3] => Array
+                (
+                    [name] => user_classes
+                    [type] => folder
+                    [size] => 4096
+                )
+
+            [5] => Array
+                (
+                    [name] => demo.php
+                    [type] => file
+                    [size] => 1628
+                )
+
+        )
+
+    [/.plinker] => Array
+        (
+            [2] => Array
+                (
+                    [name] => crontab.journal
+                    [type] => file
+                    [size] => 45
+                )
+
+        )
+
+    [/user_classes] => Array
+        (
+            [4] => Array
+                (
+                    [name] => demo.php
+                    [type] => file
+                    [size] => 345
+                )
+
+        )
+
+)
 ```
 
-### Crontab
+**Response (with extended true)**
+```
+Array
+(
+    [/] => Array
+        (
+            [0] => Array
+                (
+                    [name] => server.php
+                    [type] => file
+                    [size] => 706
+                    [info] => Array
+                        (
+                            [last_access] => 1525369379
+                            [change_time] => 1525368118
+                            [modified_time] => 1517173011
+                            [basename] => server.php
+                            [extension] => php
+                            [filename] => server.php
+                            [group] => 33
+                            [owner] => 33
+                            [inode] => 3894233
+                            [path] => .
+                            [pathname] => ./server.php
+                            [size] => 706
+                            [type] => file
+                            [isDir] => 
+                            [isExecutable] => 
+                            [isFile] => 1
+                            [isLink] => 
+                            [readable] => 1
+                            [writable] => 1
+                        )
 
-Get current crontab, equivalent to `crontab -l`.
+                )
+    // snip..
+```
+
+### Create File
+
+Create a file.
 
 **Call**
 ``` php
-$result = $client->cron->crontab();
+$result = $client->files->createFile('./path/to/file.txt', 'the file contents');
 ```
 
 **Response**
 ``` text
-# My Cron Task
-0 * * * * cd ~
-# \My Cron Task
+number of bytes written to file
 ```
 
-### Dump
+### Get File
 
-Get current crontab journal. The journal is a file which gets built and then applied to the real crontab.
+Get a file.
 
 **Call**
 ``` php
-$result = $client->cron->dump();
+$result = $client->files->getFile('./path/to/file.txt');
 ```
 
 **Response**
 ``` text
-# My Cron Task
-0 * * * * cd ~
-# \My Cron Task
+the file contents
 ```
 
-### Create
+### Delete File
 
-Create a crontask entry. Note one entry per key, multiple calls with same key would simply update.
+Delete a file.
 
 **Call**
 ``` php
-$result = $client->cron->create('My Cron Task', '* * * * * cd ~');
-```
-
-**Response**
-``` text
-
-```
-
-### Get
-
-Get a crontask entry, also has an alias method read.
-
-**Call**
-``` php
-$result = $client->cron->get('My Cron Task');
-```
-
-**Response**
-``` text
-0 * * * * cd ~
-```
-
-### Update
-
-Update cron task.
-
-**Call**
-``` php
-$result = $client->cron->update('My Cron Task', '0 * * * * cd ~');
-```
-
-**Response**
-``` text
-
-```
-
-### Delete
-
-Delete a cron task.
-
-**Call**
-``` php
-$result = $client->cron->delete('My Cron Task');
-```
-
-**Response**
-``` text
-
-```
-
-### Drop
-
-Drop cron task journal (delete all, but does not apply it).
-
-**Call**
-``` php
-$result =  $client->cron->drop();
-```
-
-**Response**
-``` text
-
-```
-
-### Apply
-
-Apply crontab journal to users crontab.
-
-**Call**
-``` php
-$result = $client->cron->apply();
+$result = $client->files->deleteFile('./path/to/file.txt');
 ```
 
 **Response**
@@ -193,7 +202,7 @@ There are no tests setup for this component.
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/plinker-rpc/cron/blob/master/CONTRIBUTING) for details.
+Please see [CONTRIBUTING](https://github.com/plinker-rpc/files/blob/master/CONTRIBUTING) for details.
 
 ## Security
 
@@ -202,7 +211,7 @@ If you discover any security related issues, please contact me via [https://cher
 ## Credits
 
 - [Lawrence Cherone](https://github.com/lcherone)
-- [All Contributors](https://github.com/plinker-rpc/cron/graphs/contributors)
+- [All Contributors](https://github.com/plinker-rpc/files/graphs/contributors)
 
 
 ## Development Encouragement
@@ -216,6 +225,6 @@ Get your company or name listed throughout the documentation and on each github 
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/plinker-rpc/cron/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/plinker-rpc/files/blob/master/LICENSE) for more information.
 
 See the [organisations page](https://github.com/plinker-rpc) for additional components.
