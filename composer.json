@@ -1,9 +1,9 @@
 {
     "name": "plinker/cron",
     "minimum-stability": "dev",
-    "description": "",
+    "description": "A cron component which allows you to read and control cron tasks on remote systems.",
     "license": "MIT",
-    "keywords": [],
+    "keywords": ["rpc", "cron", "plinker"],
     "homepage": "https://github.com/plinker-rpc",
     "authors": [
         {
