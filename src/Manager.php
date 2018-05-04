@@ -25,7 +25,7 @@ namespace Plinker\Cron {
         {
             $this->config = $config;
 
-            $this->tab = new lib\CronFileWriter(
+            $this->tab = new Lib\CronFileWriter(
                 (!empty($this->config['config']['journal']) ? $this->config['config']['journal'] : './crontab.journal')
             );
         }
