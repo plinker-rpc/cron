@@ -27,67 +27,108 @@ Creating a client instance is done as follows:
     $client = new \Plinker\Core\Client(
         'http://example.com/server.php',
         [
-            'secret' => 'a secret password'
+            'secret' => 'a secret password',
+            // optional
+            'config' => [
+                'journal' => './.plinker/crontab.journal',
+                'apply'   => false
+            ]
         ]
     );
     
-    // or using global function
-    $client = plinker_client('http://example.com/server.php', 'a secret password');
-   
- 
+    // or using global function, with optional array
+    $client = plinker_client('http://example.com/server.php', 'a secret password', [
+        'config' => [
+            'journal' => './.plinker/crontab.journal',
+            'apply'   => false
+        ]
+    ]);
+    
+
+## Component Config
+
+| Parameter    | Description | Default |
+| ----------   | ------------- |  ------------- | 
+| journal | Path to journal file | `./.plinker/crontab.journal` |
+| apply | Apply crontab after each call, the default is to only apply upon calling the `apply()` method | `false` |
+
+
 ## Methods
 
 Once setup, you call the class though its namespace to its method.
 
+### User
+
+Get current user, helps to debug which user the crontab is owned by.
+
+**Call**
+``` php
+$result = $client->cron->user();
+```
+
+**Response**
+``` text
+www-data
+```
 
 ### Crontab
 
-Get crontab as-is.
+Get current crontab, equivalent to `crontab -l`.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->crontab();
 ```
 
 **Response**
 ``` text
-
+# My Cron Task
+0 * * * * cd ~
+# \My Cron Task
 ```
 
+### Dump
+
+Get current crontab journal. The journal is a file which get built and then applied to the real crontab.
+
+**Call**
+``` php
+$result = $client->cron->dump();
+```
+
+**Response**
+``` text
+# My Cron Task
+0 * * * * cd ~
+# \My Cron Task
+```
 
 ### Create
 
-Create a crontask.
+Create a crontask entry. Note one entry per key, multiple calls with same key would simply update.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->create('My Cron Task', '* * * * * cd ~');
 ```
 
 **Response**
 ``` text
-encode this string
-```
 
+```
 
 ### Get
 
-Get a crontask.
+Get a crontask entry, also has an alias method read.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->get('My Cron Task');
 ```
 
 **Response**
 ``` text
-
+0 * * * * cd ~
 ```
 
 ### Update
@@ -95,8 +136,6 @@ $result = $client->cron->get('My Cron Task');
 Update cron task.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->update('My Cron Task', '0 * * * * cd ~');
 ```
@@ -106,31 +145,11 @@ $result = $client->cron->update('My Cron Task', '0 * * * * cd ~');
 
 ```
 
-
-### Read
-
-Read a cron task.
-
-**Call**
-
-
-``` php
-$result = $client->cron->read('My Cron Task');
-```
-
-**Response**
-``` text
-
-```
-
-
 ### Delete
 
 Delete a cron task.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->delete('My Cron Task');
 ```
@@ -140,14 +159,11 @@ $result = $client->cron->delete('My Cron Task');
 
 ```
 
-
 ### Drop
 
-Drop cron task journal.
+Drop cron task journal (delete all, but does not apply it).
 
 **Call**
-
-
 ``` php
 $result =  $client->cron->drop();
 ```
@@ -157,31 +173,11 @@ $result =  $client->cron->drop();
 
 ```
 
-
-### Dump
-
-Return current crontab as plain text.
-
-**Call**
-
-
-``` php
-$result = $client->cron->dump();
-```
-
-**Response**
-``` text
-
-```
-
-
 ### Apply
 
-Apply crontab.
+Apply crontab journal to users crontab.
 
 **Call**
-
-
 ``` php
 $result = $client->cron->apply();
 ```
@@ -190,7 +186,6 @@ $result = $client->cron->apply();
 ``` text
 
 ```
-
 
 ## Testing
 

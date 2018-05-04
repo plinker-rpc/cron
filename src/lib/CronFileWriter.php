@@ -20,30 +20,15 @@ class CronFileWriter
     public function __construct($file)
     {
         $this->file = $file;
-
-        try {
-            // create file if not exist
-            if (!file_exists($this->file)) {
-                if (!$this->handle = fopen($this->file, 'w')) {
-                    throw new Exception('Cannot create file');
-                }
-                flock($this->handle, LOCK_EX);
-                fwrite($this->handle, '');
-                flock($this->handle, LOCK_UN);
-                fclose($this->handle);
-            }
-
-            //check file is readable
-            if (!is_readable($this->file)) {
-                throw new Exception('File is not readable');
-            }
-
-            //check file is writable
-            if (!is_writable($this->file)) {
-                throw new Exception('File is not writable');
-            }
-        } catch (Exception $e) {
-            exit('Error: '.$e->getMessage());
+        
+        // check journal dirname
+        if (!file_exists(dirname($this->file))) {
+            mkdir(dirname($this->file), 0755, true);
+        }
+        
+        // check journal file
+        if (!file_exists($this->file)) {
+            touch($this->file);
         }
     }
 
