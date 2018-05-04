@@ -50,7 +50,7 @@ Creating a client instance is done as follows:
 | Parameter    | Description | Default |
 | ----------   | ------------- |  ------------- | 
 | journal | Path to journal file | `./.plinker/crontab.journal` |
-| apply | Apply crontab after each call, the default is to only apply upon calling the `apply()` method | `false` |
+| apply | Apply crontab after each call, default is to only apply upon calling `apply()` method | `false` |
 
 
 ## Methods
@@ -89,7 +89,7 @@ $result = $client->cron->crontab();
 
 ### Dump
 
-Get current crontab journal. The journal is a file which get built and then applied to the real crontab.
+Get current crontab journal. The journal is a file which gets built and then applied to the real crontab.
 
 **Call**
 ``` php
